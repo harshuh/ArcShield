@@ -1,0 +1,18 @@
+{
+  "manifest_version": 2,
+  "name": "Arc Shield",
+  "version": "1.0",
+
+  "description": "Developing a web browser lock extension that secures your browsing by locking the browser and protecting your personal information from unauthorized access.",
+
+  "icons": {
+    "48": "icons/Arcnet_Shield.webp"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["*://*.google.com/*"],
+      "js": ["arc.js"]
+    }
+  ]
+}
