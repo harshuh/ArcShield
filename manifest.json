@@ -9,13 +9,13 @@
     "96": "icons/Arcnet_Shield.webp"
   },
   "background": {
-    "scripts": ["browser-polyfill.js", "background.js"],
+    "scripts": ["background.js"],
     "persistent": false
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["browser-polyfill.js", "extension.js"]
+      "js": ["extension.js"]
     }
   ],
   "browser_action": {
