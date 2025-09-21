@@ -2,10 +2,23 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
-    <title>Arc Shield</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Unlock Browser</title>
+    <link rel="stylesheet" href="extension.css" />
   </head>
   <body>
-    Hey, Arc
+    <div class="password-container">
+      <h2>Enter Password</h2>
+
+      <div class="input-group">
+        <input type="password" id="unlock-password" placeholder="Password" />
+      </div>
+
+      <button id="unlock-btn">Unlock</button>
+
+      <p id="message"></p>
+    </div>
+
+    <script src="extension.js"></script>
   </body>
 </html>

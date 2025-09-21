@@ -1,6 +1,6 @@
 document.querySelector(".lock-btn").addEventListener("click", () => {
   chrome.windows.create({
-    url: chrome.runtime.getURL("lock.html"),
+    url: chrome.runtime.getURL("extension.html"),
     type: "popup",
     width: 400,
     height: 300,
