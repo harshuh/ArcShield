@@ -6,17 +6,16 @@
   "description": "Developing a web browser lock extension that secures your browsing by locking the browser and protecting your personal information from unauthorized access.",
 
   "icons": {
-    "48": "icons/Arcnet_Shield.webp"
+    "96": "icons/Arcnet_Shield.webp"
   },
   "background": {
-    "scripts": ["background.js"],
-    "persistent": true
+    "scripts": ["browser-polyfill.js", "background.js"],
+    "persistent": false
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["arc.js"],
-      "run_at": "document_start"
+      "js": ["browser-polyfill.js", "extension.js"]
     }
   ],
   "browser_action": {
