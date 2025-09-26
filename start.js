@@ -1,14 +1,25 @@
 function handleSavePassword() {
+  const name = document.getElementById("name");
+  const email = document.getElementById("email");
   const passwordInput = document.getElementById("password");
   const confirmPasswordInput = document.getElementById("confirm-password");
   const message = document.getElementById("message");
   const spinner = document.getElementById("spinner");
   const saveBtn = document.getElementById("save-btn");
 
+  const trimName = name.value.trim();
+  const trimEmail = email.value.trim();
+
   const password = passwordInput.value.trim();
   const confirmPassword = confirmPasswordInput.value.trim();
 
   message.textContent = "";
+
+  if (!name || !email) {
+    message.style.color = "#ff8080";
+    message.textContent = "Please fill in both fields.";
+    return;
+  }
 
   if (!password || !confirmPassword) {
     message.style.color = "#ff8080";
@@ -35,7 +46,7 @@ function handleSavePassword() {
 
       setTimeout(() => {
         window.close();
-      }, 2000);
+      }, 1000);
     })
     .catch((error) => {
       spinner.style.display = "none";
@@ -46,7 +57,6 @@ function handleSavePassword() {
     });
 }
 
-// Attach the click listener
 document
   .getElementById("save-btn")
   .addEventListener("click", handleSavePassword);

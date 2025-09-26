@@ -3,30 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Set Password</title>
+    <title>Arc Shield | Start</title>
     <link rel="stylesheet" href="start.css" />
   </head>
   <body>
-    <div class="password-container">
-      <h2>Set Your Password</h2>
-
-      <div class="input-group">
-        <input type="password" id="password" placeholder="Enter Password" />
+    <div class="container">
+      <div class="welcome-box">
+        <h2>Arc Shield | Welcome</h2>
+        <p>
+          Welcome to Arc Shield! Get ready in a few steps to secure your browser
+          and privacy. This unique extension will provide you with a shield in
+          the realm of digital security. Let's take the first step together to
+          make your browsing experience safer and more personal. Let's start and
+          navigate the digital world more securely.
+        </p>
       </div>
 
-      <div class="input-group">
+      <div class="form-box">
+        <input type="text" id="name" placeholder="Name" />
+        <input type="email" id="email" placeholder="Email" />
+        <input type="password" id="password" placeholder="Password" />
         <input
           type="password"
           id="confirm-password"
           placeholder="Confirm Password"
         />
+
+        <button id="save-btn">Register</button>
+
+        <div id="spinner" style="display: none"></div>
+        <p id="message"></p>
       </div>
-
-      <button id="save-btn">Set Password</button>
-
-      <div id="spinner" style="display: none"></div>
-
-      <p id="message"></p>
     </div>
 
     <script src="start.js"></script>
