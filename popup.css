@@ -1,13 +1,15 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  width: 250px;
-  padding: 20px;
   margin: 0;
-  background: #1e1e2f;
-  color: #fff;
+  padding: 0;
+  background-color: #0b0b0b;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  width: 300px;
+  height: 180px;
+  border: 2px solid #ffffff;
+  color: white;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 }
 
 .popup-container {
@@ -15,43 +17,61 @@ body {
 }
 
 h2 {
-  color: #ad8aee;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 15px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  transition: all 0.3s ease;
+  font-size: 24px;
+  color: white;
+  margin: 0;
+  margin-bottom: 20px;
 }
 
 .button-row {
   display: flex;
   justify-content: center;
-  gap: 15px; 
-  margin-top: 10px;
+  align-items: center;
+  gap: 20px;
 }
 
-.lock-btn, .setting-btn {
-  padding: 10px 15px;
-  font-size: 14px;
-  border-radius: 8px;
-  border: none;
+.lock-btn {
+  background: transparent;
+  border: 2px solid white;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.lock-btn:hover {
+  background-color: #ffffff10;
+}
+
+/* Settings Button */
+.settings-btn {
+  background: transparent;
+  border: 2px solid white;
+  border-radius: 50%;
+  padding: 6px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  background: #00d4ff;
-  color: #1e1e2f;
+  justify-content: center;
+  background-color: #fff;
+
+  transition: background-color 0.2s ease;
 }
 
-.lock-btn:hover, .setting-btn:hover {
-  background: #00bcd4;
+.settings-btn:hover {
+  background-color: #fff;
+}
+
+/* Icon inside the button */
+.settings-icon {
+  width: 24px;
+  height: 24px;
+  user-drag: none;
+  -webkit-user-drag: none;
+  pointer-events: none; /* Prevent clicking the image directly */
 }

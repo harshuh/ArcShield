@@ -2,23 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <link rel="stylesheet" href="popup.css" />
-    <script
-      type="application/javascript"
-      src="browser-polyfill.js"
-      defer
-    ></script>
-    <script src="popup.js" defer></script>
-    <title>Arc Shield</title>
+    <title>ARC Shield</title>
+    <script src="popup.js"></script>
   </head>
   <body>
     <div class="popup-container">
-      <h2>Arc Shield</h2>
+      <h2>ARC Shield</h2>
       <div class="button-row">
         <button class="lock-btn">Lock</button>
 
-        <button class="setting-btn">Settings</button>
+        <!-- Settings button -->
+        <button class="settings-btn" title="Settings">
+          <img
+            src="icons/settings.png"
+            alt="Settings"
+            class="settings-icon"
+            draggable="false"
+          />
+        </button>
       </div>
     </div>
   </body>
