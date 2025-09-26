@@ -15,7 +15,7 @@ function handleSavePassword() {
 
   message.textContent = "";
 
-  if (!name || !email) {
+  if (!trimName || !trimEmail) {
     message.style.color = "#ff8080";
     message.textContent = "Please fill in both fields.";
     return;
