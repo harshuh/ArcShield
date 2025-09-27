@@ -14,12 +14,14 @@ function handleUnlock() {
 
   unlockBtn.disabled = true;
 
-  browser.storage.local.get("password", (result) => {
+  browser.storage.local.get(["password"], (result) => {
     unlockBtn.disabled = false;
 
     if (result.password === enteredPassword) {
       message.style.color = "#bbf8dd";
       message.textContent = "Unlocked successfully!";
+
+      browser.storage.local.set({ locked: false });
 
       setTimeout(() => {
         window.close();
