@@ -5,20 +5,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Unlock Browser</title>
     <link rel="stylesheet" href="extension.css" />
+    <script src="extension.js"></script>
   </head>
   <body>
-    <div class="password-container">
-      <h2>Enter Password</h2>
+    <div class="outer-box">
+      <h2>Arc Shield | Extension to Lock Browser</h2>
 
-      <div class="input-group">
-        <input type="password" id="unlock-password" placeholder="Password" />
+      <div class="password-container">
+        <p>Enter Your Password</p>
+
+        <div class="input-group">
+          <input type="password" id="unlock-password" placeholder="Password" />
+        </div>
+
+        <button id="unlock-btn">Unlock</button>
+
+        <p id="message"></p>
       </div>
-
-      <button id="unlock-btn">Unlock</button>
-
-      <p id="message"></p>
     </div>
-
-    <script src="extension.js"></script>
   </body>
 </html>

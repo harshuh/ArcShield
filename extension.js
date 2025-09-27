@@ -4,7 +4,6 @@ function handleUnlock() {
   const unlockBtn = document.getElementById("unlock-btn");
 
   const enteredPassword = passwordInput.value.trim();
-
   message.textContent = "";
 
   if (!enteredPassword) {
@@ -15,30 +14,26 @@ function handleUnlock() {
 
   unlockBtn.disabled = true;
 
-  browser.storage.local
-    .get("password")
-    .then((result) => {
-      unlockBtn.disabled = false;
+  chrome.storage.local.get("password", (result) => {
+    unlockBtn.disabled = false;
 
-      if (result.password === enteredPassword) {
-        message.style.color = "#bbf8ddff";
-        message.textContent = "Unlocked successfully!";
+    if (result.password === enteredPassword) {
+      message.style.color = "#bbf8dd";
+      message.textContent = "Unlocked successfully!";
 
-        setTimeout(() => {
-          // Close unlock page or open main extension page
-          window.close();
-        }, 1000);
-      } else {
-        message.style.color = "#ff8080";
-        message.textContent = "Incorrect password!";
-      }
-    })
-    .catch((error) => {
-      unlockBtn.disabled = false;
+      setTimeout(() => {
+        window.close();
+      }, 1000);
+    } else {
       message.style.color = "#ff8080";
-      message.textContent = "Error: " + error;
-      console.error(error);
-    });
+      message.textContent = "Incorrect password!";
+    }
+  });
 }
 
-document.getElementById("unlock-btn").addEventListener("click", handleUnlock);
+document.addEventListener("DOMContentLoaded", () => {
+  const unlockBtn = document.getElementById("unlock-btn");
+  if (unlockBtn) {
+    unlockBtn.addEventListener("click", handleUnlock);
+  }
+});

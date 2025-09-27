@@ -15,11 +15,11 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["extension.js"]
+      "js": ["lock.js"]
     }
   ],
   "browser_action": {
     "default_popup": "popup.html"
   },
-  "permissions": ["tabs", "storage", "webNavigation"]
+  "permissions": ["tabs", "storage", "webNavigation", "window"]
 }
