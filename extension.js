@@ -14,7 +14,7 @@ function handleUnlock() {
 
   unlockBtn.disabled = true;
 
-  chrome.storage.local.get("password", (result) => {
+  browser.storage.local.get("password", (result) => {
     unlockBtn.disabled = false;
 
     if (result.password === enteredPassword) {
