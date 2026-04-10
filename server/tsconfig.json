@@ -1,15 +1,28 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "target": "ES2023",
+    "strict": true,
+    "esModuleInterop": true,
+    // "ignoreDeprecations": "6.0",
+
     // File Layout
-    // "rootDir": "./src",
-    // "outDir": "./dist",
+    "rootDir": "./src",   
+    "outDir": "./dist",   
+
+    // Path Aliases
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]   // allows: import { x } from '@/utils/jwt'
+    },
 
     // Environment Settings
     // See also https://aka.ms/tsconfig/module
-    "module": "nodenext",
-    "target": "esnext",
-    "types": [],
+    // "module": "nodenext",
+    // "target": "esnext",
+    "types": ["node"],   
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],
@@ -33,12 +46,15 @@
     // "noPropertyAccessFromIndexSignature": true,
 
     // Recommended Options
-    "strict": true,
-    "jsx": "react-jsx",
-    "verbatimModuleSyntax": true,
-    "isolatedModules": true,
+    // "strict": true,
+
+
+    "verbatimModuleSyntax": true,       // enforces: import type {} for type-only imports
+    "isolatedModules": true,            // each file is independently transpilable (needed for tsx/esbuild)
     "noUncheckedSideEffectImports": true,
-    "moduleDetection": "force",
-    "skipLibCheck": true,
-  }
+    "moduleDetection": "force",         // treats every file as a module, avoids global scope leaks
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*", "prisma/seed.ts"],
+  "exclude": ["node_modules", "dist"]
 }
