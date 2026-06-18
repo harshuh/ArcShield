@@ -25,11 +25,13 @@ export default defineManifest({
     },
   ],
 
-  action: {
+ action: {
     default_popup: 'popup.html',
   },
 
-  web_accessible_resources: [
+  options_page: 'settings.html',
+
+   web_accessible_resources: [
     {
       resources: ['lock.html', 'start.html', 'assets/*'],
       matches: ['<all_urls>'],
