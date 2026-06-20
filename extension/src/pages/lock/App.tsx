@@ -60,8 +60,7 @@ function PinView({ onForgot }: { onForgot: () => void }) {
         setError('Incorrect PIN. Try again.')
         setPin('')
       } else {
-        await chrome.storage.local.set({ 'arcshield:locked': false })
-        window.close()
+        await chrome.runtime.sendMessage({ type: 'UNLOCK' })
       }
     } catch (err) {
       setError('Could not verify PIN. Please try again.')

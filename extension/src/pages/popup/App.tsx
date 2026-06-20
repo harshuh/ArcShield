@@ -30,14 +30,14 @@ export function App() {
   }
 
   async function handleLockBrowser() {
-    try {
-      await chrome.runtime.sendMessage({ type: 'LOCK_ALL_TABS' })
-      setStatus('Lock requested \u2014 not yet implemented.')
-    } catch (err) {
-      setStatus('Could not reach the background worker.')
-      console.error(err)
-    }
+  try {
+    await chrome.runtime.sendMessage({ type: 'LOCK_ALL_TABS' })
+    window.close()
+  } catch (err) {
+    setStatus('Could not lock. Please try again.')
+    console.error(err)
   }
+}
 
   function handleOpenSettings() {
     chrome.runtime.openOptionsPage()
