@@ -72,95 +72,33 @@ body {
   gap: 16px;
   padding: 16px;
 }
-
-.idle-slider {
+.idle-presets {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
-.idle-slider-track-wrap {
-  position: relative;
-  height: 16px;
-  display: flex;
-  align-items: center;
-}
-
-.idle-slider-input {
-  width: 100%;
-  margin: 0;
-  appearance: none;
-  background: transparent;
-  cursor: pointer;
-  position: relative;
-  z-index: 2;
-}
-
-
-.idle-slider-input::-webkit-slider-runnable-track {
-  height: 2px;
-  background: var(--border);
-}
-
-.idle-slider-input::-webkit-slider-thumb {
-  appearance: none;
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid var(--surface);
-  box-shadow: 0 0 0 1px var(--accent);
-  margin-top: -7px;
-}
-
-.idle-slider-input::-moz-range-track {
-  height: 2px;
-  background: var(--border);
-}
-
-.idle-slider-input::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  border: 2px solid var(--surface);
-  box-shadow: 0 0 0 1px var(--accent);
-}
-
-.idle-slider-stops {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  height: 0;
-  z-index: 1;
-  pointer-events: none;
-}
-
-.idle-slider-dot {
-  position: absolute;
-  top: 0;
-  transform: translate(-50%, -50%);
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--border);
-}
-
-.idle-slider-dot-active {
-  background: var(--accent);
-}
-
-.idle-slider-labels {
-  display: flex;
-  justify-content: space-between;
-  font-size: 10px;
+.idle-preset-chip {
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  font-size: 12px;
+  font-weight: 500;
   color: var(--text-muted);
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-.idle-slider-label-active {
-  color: var(--accent);
-  font-weight: 600;
+.idle-preset-chip:hover {
+  border-color: var(--accent);
+  color: var(--text);
+}
+
+.idle-preset-chip-active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
 }
 
 .popup-actions {
