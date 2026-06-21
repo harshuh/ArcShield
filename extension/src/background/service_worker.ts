@@ -32,7 +32,8 @@ chrome.runtime.onStartup.addListener(async () => {
   const lockWin = await chrome.windows.create({
     url: chrome.runtime.getURL('lock.html'),
     type: 'popup',
-    state: 'fullscreen',
+    width: 500,
+    height: 640,   
     focused: true,
   })
 
@@ -130,7 +131,7 @@ async function enforceLockWindow() {
   // Bring lock window back to focus and fullscreen
   if (lockWindowId) {
     await chrome.windows
-      .update(lockWindowId, { focused: true, state: 'fullscreen' })
+      .update(lockWindowId, { focused: true, width: 500, height: 640 })
       .catch(() => {})
   }
 }
