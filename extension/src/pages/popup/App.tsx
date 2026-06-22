@@ -1,67 +1,66 @@
-import { useEffect, useState } from 'react'
-import { IdleTab } from './IdleTab'
-import { TabLockPanel } from './TabLockPanel'
+import { useEffect, useState } from "react";
+import { IdleTab } from "./IdleTab";
+import { TabLockPanel } from "./TabLockPanel";
 import {
-  getArcShieldData,
-  setArcShieldSettings,
-  type ArcShieldSettings,
-} from '../../shared/arcShieldStorage'
+  getlmbData,
+  setlmbSettings,
+  type lmbSettings,
+} from "../../shared/lmbStorage";
 
-type Tab = 'idle' | 'tabLock'
+type Tab = "idle" | "tabLock";
 
 export function App() {
-  const [tab, setTab] = useState<Tab>('idle')
-  const [settings, setSettings] = useState<ArcShieldSettings | null>(null)
-  const [status, setStatus] = useState<string | null>(null)
+  const [tab, setTab] = useState<Tab>("idle");
+  const [settings, setSettings] = useState<lmbSettings | null>(null);
+  const [status, setStatus] = useState<string | null>(null);
 
   useEffect(() => {
-    getArcShieldData().then((data) => setSettings(data.settings))
-  }, [])
+    getlmbData().then((data) => setSettings(data.settings));
+  }, []);
 
   async function handleApplyIdleMinutes(minutes: number) {
-    const next = await setArcShieldSettings({ autoLockMinutes: minutes })
-    setSettings(next)
+    const next = await setlmbSettings({ autoLockMinutes: minutes });
+    setSettings(next);
   }
 
   async function handleApplyLockedUrl(url: string) {
-    const next = await setArcShieldSettings({ lockedUrl: url })
-    setSettings(next)
-    return { ok: true }
+    const next = await setlmbSettings({ lockedUrl: url });
+    setSettings(next);
+    return { ok: true };
   }
 
   async function handleLockBrowser() {
-  try {
-    await chrome.runtime.sendMessage({ type: 'LOCK_ALL_TABS' })
-    window.close()
-  } catch (err) {
-    setStatus('Could not lock. Please try again.')
-    console.error(err)
+    try {
+      await chrome.runtime.sendMessage({ type: "LOCK_ALL_TABS" });
+      window.close();
+    } catch (err) {
+      setStatus("Could not lock. Please try again.");
+      console.error(err);
+    }
   }
-}
 
   function handleOpenSettings() {
-    chrome.runtime.openOptionsPage()
+    chrome.runtime.openOptionsPage();
   }
 
   return (
     <div>
       <div className="popup-header">
-        <span className="popup-icon">
-        </span>
+        <span className="popup-icon"></span>
         <p className="popup-title">Arc Shield</p>
       </div>
 
       <div className="popup-card">
         <div className="popup-tabs">
           <button
-            className={`popup-tab ${tab === 'idle' ? 'popup-tab-active' : ''}`}
-            onClick={() => setTab('idle')}
+            className={`popup-tab ${tab === "idle" ? "popup-tab-active" : ""}`}
+            onClick={() => setTab("idle")}
           >
             Idle
           </button>
           <button
-            className={`popup-tab ${tab === 'tabLock' ? 'popup-tab-active' : ''}`}
-            onClick={() => setTab('tabLock')}
+            className={`popup-tab ${tab === "tabLock" ? "popup-tab-active" : ""}`}
+            onClick={() => setTab("tabLock")}
           >
             Tab Lock
           </button>
@@ -69,10 +68,16 @@ export function App() {
 
         {!settings ? (
           <p className="popup-status">Loading</p>
-        ) : tab === 'idle' ? (
-          <IdleTab initialMinutes={settings.autoLockMinutes} onApply={handleApplyIdleMinutes} />
+        ) : tab === "idle" ? (
+          <IdleTab
+            initialMinutes={settings.autoLockMinutes}
+            onApply={handleApplyIdleMinutes}
+          />
         ) : (
-          <TabLockPanel initialUrl={settings.lockedUrl} onApply={handleApplyLockedUrl} />
+          <TabLockPanel
+            initialUrl={settings.lockedUrl}
+            onApply={handleApplyLockedUrl}
+          />
         )}
       </div>
 
@@ -81,12 +86,15 @@ export function App() {
           Settings
         </button>
 
-        <button className="popup-action popup-action-primary" onClick={handleLockBrowser}>
+        <button
+          className="popup-action popup-action-primary"
+          onClick={handleLockBrowser}
+        >
           Lock Browser
         </button>
       </div>
 
       {status && <p className="popup-status">{status}</p>}
     </div>
-  )
+  );
 }

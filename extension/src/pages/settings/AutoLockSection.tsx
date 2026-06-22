@@ -1,11 +1,11 @@
-import type { ArcShieldSettings } from '../../shared/arcShieldStorage'
+import type { lmbSettings } from "../../shared/lmbStorage";
 
 interface AutoLockSectionProps {
-  settings: ArcShieldSettings
-  onChange: (next: Partial<ArcShieldSettings>) => void
+  settings: lmbSettings;
+  onChange: (next: Partial<lmbSettings>) => void;
 }
 
-const PRESET_MINUTES = [1, 5, 10, 15, 30]
+const PRESET_MINUTES = [1, 5, 10, 15, 30];
 
 export function AutoLockSection({ settings, onChange }: AutoLockSectionProps) {
   return (
@@ -29,25 +29,31 @@ export function AutoLockSection({ settings, onChange }: AutoLockSectionProps) {
             key={minutes}
             onClick={() => onChange({ autoLockMinutes: minutes })}
             disabled={!settings.autoLockEnabled}
-            className={`preset-chip ${settings.autoLockMinutes === minutes ? 'preset-chip-active' : ''}`}
+            className={`preset-chip ${settings.autoLockMinutes === minutes ? "preset-chip-active" : ""}`}
           >
             {minutes} min
           </button>
         ))}
       </div>
     </section>
-  )
+  );
 }
 
-function Toggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+function Toggle({
+  checked,
+  onChange,
+}: {
+  checked: boolean;
+  onChange: (v: boolean) => void;
+}) {
   return (
     <button
       role="switch"
       aria-checked={checked}
       onClick={() => onChange(!checked)}
-      className={`toggle ${checked ? 'toggle-on' : ''}`}
+      className={`toggle ${checked ? "toggle-on" : ""}`}
     >
       <span className="toggle-knob" />
     </button>
-  )
+  );
 }

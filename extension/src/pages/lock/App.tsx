@@ -1,25 +1,25 @@
-import { useState } from 'react'
+import { useState } from "react";
 
-type View = 'pin' | 'forgot'
+type View = "pin" | "forgot";
 
 export function App() {
-  const [view, setView] = useState<View>('pin')
+  const [view, setView] = useState<View>("pin");
 
   return (
     <div className="lock-page">
       <div className="lock-card">
         <Brand />
 
-        {view === 'pin' ? (
-          <PinView onForgot={() => setView('forgot')} />
+        {view === "pin" ? (
+          <PinView onForgot={() => setView("forgot")} />
         ) : (
-          <ForgotView onBack={() => setView('pin')} />
+          <ForgotView onBack={() => setView("pin")} />
         )}
 
         <Footer />
       </div>
     </div>
-  )
+  );
 }
 
 function Brand() {
@@ -30,48 +30,48 @@ function Brand() {
       </div>
       <h1 className="lock-brand-mark">ARC SHIELD</h1>
     </div>
-  )
+  );
 }
 
 function PinView({ onForgot }: { onForgot: () => void }) {
-  const [pin, setPin] = useState('')
-  const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [pin, setPin] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
   function handleChange(raw: string) {
-    setError(null)
-    setPin(raw.replace(/\D/g, '').slice(0, 12))
+    setError(null);
+    setPin(raw.replace(/\D/g, "").slice(0, 12));
   }
 
   async function handleUnlock() {
     if (!pin) {
-      setError('Enter your PIN.')
-      return
+      setError("Enter your PIN.");
+      return;
     }
 
-    setSubmitting(true)
-    setError(null)
+    setSubmitting(true);
+    setError(null);
 
     try {
-      const result = await chrome.storage.local.get('arcshield:pin')
-      const savedPin = result['arcshield:pin'] as string | undefined
+      const result = await chrome.storage.local.get("lmb:pin");
+      const savedPin = result["lmb:pin"] as string | undefined;
 
       if (!savedPin || pin !== savedPin) {
-        setError('Incorrect PIN. Try again.')
-        setPin('')
+        setError("Incorrect PIN. Try again.");
+        setPin("");
       } else {
-        await chrome.runtime.sendMessage({ type: 'UNLOCK' })
+        await chrome.runtime.sendMessage({ type: "UNLOCK" });
       }
     } catch (err) {
-      setError('Could not verify PIN. Please try again.')
-      console.error(err)
+      setError("Could not verify PIN. Please try again.");
+      console.error(err);
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === 'Enter') handleUnlock()
+    if (e.key === "Enter") handleUnlock();
   }
 
   return (
@@ -100,44 +100,47 @@ function PinView({ onForgot }: { onForgot: () => void }) {
           onClick={handleUnlock}
           disabled={submitting || !pin}
         >
-          {submitting ? 'Checking…' : 'UNLOCK'}
+          {submitting ? "Checking…" : "UNLOCK"}
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 function ForgotView({ onBack }: { onBack: () => void }) {
-  const [email, setEmail] = useState('')
-  const [sent, setSent] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [sending, setSending] = useState(false)
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [sending, setSending] = useState(false);
 
   async function handleSendLink() {
-    setError(null)
+    setError(null);
 
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      setError('Enter a valid email address.')
-      return
+      setError("Enter a valid email address.");
+      return;
     }
 
-    setSending(true)
+    setSending(true);
 
     try {
-      const result = await chrome.storage.local.get('arcshield:email')
-      const savedEmail = result['arcshield:email'] as string | undefined
+      const result = await chrome.storage.local.get("lmb:email");
+      const savedEmail = result["lmb:email"] as string | undefined;
 
-      if (!savedEmail || email.trim().toLowerCase() !== savedEmail.toLowerCase()) {
-        setError('This email doesn\u2019t match the one you registered with.')
-        setSending(false)
-        return
+      if (
+        !savedEmail ||
+        email.trim().toLowerCase() !== savedEmail.toLowerCase()
+      ) {
+        setError("This email doesn\u2019t match the one you registered with.");
+        setSending(false);
+        return;
       }
-      setSent(true)
+      setSent(true);
     } catch (err) {
-      setError('Something went wrong. Please try again.')
-      console.error(err)
+      setError("Something went wrong. Please try again.");
+      console.error(err);
     } finally {
-      setSending(false)
+      setSending(false);
     }
   }
 
@@ -173,35 +176,42 @@ function ForgotView({ onBack }: { onBack: () => void }) {
             onClick={handleSendLink}
             disabled={sending || !email.trim()}
           >
-            {sending ? 'Sending…' : 'Send Link'}
+            {sending ? "Sending…" : "Send Link"}
           </button>
         </div>
       )}
     </div>
-  )
+  );
 }
 
 function Footer() {
   return (
     <div className="lock-footer">
-      
-       <a href="https://github.com/harshuh"
+      <a
+        href="https://github.com/harshuh"
         target="_blank"
         rel="noreferrer"
         className="lock-footer-link"
       >
         Github
       </a>
-      <a href="mailto:contact@arcshield.in" className="lock-footer-link">
+      <a href="mailto:contact@lmb.in" className="lock-footer-link">
         Contact Us
       </a>
     </div>
-  )
+  );
 }
 
 function ShieldIcon() {
   return (
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
+    <svg
+      width="22"
+      height="22"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.75"
+    >
       <path
         d="M12 3 4 6v6c0 5 3.5 7.5 8 9 4.5-1.5 8-4 8-9V6l-8-3Z"
         strokeLinecap="round"
@@ -209,5 +219,5 @@ function ShieldIcon() {
       />
       <path d="m9 12 2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
-  )
+  );
 }

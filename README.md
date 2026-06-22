@@ -1,6 +1,6 @@
-# ArcShield
+# lmb
 
-ArcShield is a browser extension that enhances your browsing security by locking tabs with JWT-backed authentication. It consists of a backend server and a browser extension that work together to protect your browsing sessions.
+lmb is a browser extension that enhances your browsing security by locking tabs with JWT-backed authentication. It consists of a backend server and a browser extension that work together to protect your browsing sessions.
 
 ## Features
 
@@ -10,7 +10,7 @@ ArcShield is a browser extension that enhances your browsing security by locking
 - **Session Management**: Secure session handling with the ability to log out and revoke active sessions.
 - **Password Verification**: Re-authenticate to unlock your browser without a full login.
 - **Keyboard Shortcuts**:
-  - `Ctrl+Shift+L` (or `Cmd+Shift+L` on Mac) to open the ArcShield popup.
+  - `Ctrl+Shift+L` (or `Cmd+Shift+L` on Mac) to open the lmb popup.
   - `Ctrl+Shift+K` (or `Cmd+Shift+K` on Mac) to instantly lock all tabs.
 
 ## Tech Stack
@@ -28,7 +28,7 @@ ArcShield is a browser extension that enhances your browsing security by locking
 
 ## Project Structure
 
-This repository is a monorepo containing the two main components of ArcShield:
+This repository is a monorepo containing the two main components of lmb:
 
 - `/server`: The Express.js backend API that handles user authentication, session management, and stores locking preferences.
 - `/extension`: The browser extension built with React and Vite. It communicates with the server to enforce the locking rules.
