@@ -47,7 +47,7 @@ export function App() {
     <div>
       <div className="popup-header">
         <span className="popup-icon"></span>
-        <p className="popup-title">Arc Shield</p>
+        <p className="popup-title">LockMyBrowser</p>
       </div>
 
       <div className="popup-card">

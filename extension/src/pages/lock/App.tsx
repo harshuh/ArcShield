@@ -28,7 +28,7 @@ function Brand() {
       <div className="lock-brand-badge">
         <ShieldIcon />
       </div>
-      <h1 className="lock-brand-mark">ARC SHIELD</h1>
+      <h1 className="lock-brand-mark">LockMyBrowser</h1>
     </div>
   );
 }

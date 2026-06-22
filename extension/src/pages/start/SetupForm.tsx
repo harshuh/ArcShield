@@ -51,7 +51,7 @@ export function SetupForm({ onComplete, submitting, error }: SetupFormProps) {
   return (
     <form className="setup-form" onSubmit={handleSubmit}>
       <div>
-        <h1 className="step-title">Set up Arc Shield</h1>
+        <h1 className="step-title">Set up LockMyBrowser</h1>
         <p className="step-subtitle">
           Your PIN locks and unlocks your browser day to day. Your email and password are
           only used to recover access if you forget your PIN.

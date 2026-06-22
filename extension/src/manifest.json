@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "Arc Shield",
+  "name": "LockMyBrowser",
   "version": "1.0.0",
-  "description": "Secure your browser with Arc Shield — locks all tabs and protects your browsing session with JWT-backed authentication.",
+  "description": "Secure your browser with LockMyBrowser — locks all tabs and protects your browsing session with JWT-backed authentication.",
 
   "permissions": [
     "tabs",
@@ -45,7 +45,7 @@
         "default": "Ctrl+Shift+L",
         "mac": "Command+Shift+L"
       },
-      "description": "Open Arc Shield popup"
+      "description": "Open LockMyBrowser popup"
     },
     "lock-all-tabs": {
       "suggested_key": {
@@ -57,6 +57,6 @@
   },
 
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'self' http://localhost:1124"
+    "extension_pages": "script-src 'self'; object-src 'none'; connect-src 'self' http://localhost:5173"
   }
 }

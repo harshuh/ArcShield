@@ -3,9 +3,9 @@ import pkg from './package.json'
 
 export default defineManifest({
   manifest_version: 3, //as its new but not supports firefox its 2
-  name: 'Arc Shield',
+  name: 'LockMyBrowser',
   description:
-    'Secure your browser with Arc Shield — locks all tabs and protects your browsing session.',
+    'Secure your browser with LockMyBrowser — locks all tabs and protects your browsing session.',
   version: pkg.version,
 
   // permissions: ['tabs', 'storage', 'windows', 'webNavigation', 'activeTab', 'scripting'],
@@ -45,7 +45,7 @@ export default defineManifest({
         default: 'Ctrl+Shift+L',
         mac: 'Command+Shift+L',
       },
-      description: 'Open Arc Shield popup',
+      description: 'Open LockMyBrowser popup',
     },
     'lock-all-tabs': {
       suggested_key: {
@@ -57,6 +57,6 @@ export default defineManifest({
   },
 
   content_security_policy: {
-    extension_pages: "script-src 'self'; object-src 'none'; connect-src 'self' http://localhost:1124",
+    extension_pages: "script-src 'self'; object-src 'none'; connect-src 'self' http://localhost:5173",
   },
 })

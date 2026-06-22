@@ -10,9 +10,9 @@ export function AboutStep({ onNext }: AboutStepProps) {
       </div>
 
       <div>
-        <h1 className="step-title">Welcome to Arc Shield</h1>
+        <h1 className="step-title">Welcome to LockMyBrowser</h1>
         <p className="step-subtitle">
-          Arc Shield locks every tab in your browser behind a PIN, So anyone who walks up
+          LockMyBrowser locks every tab in your browser behind a PIN, So anyone who walks up
           to your machine can't see what you were working on.
         </p>
       </div>

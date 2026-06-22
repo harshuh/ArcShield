@@ -45,7 +45,7 @@ function SettingsContent({ initialData }: { initialData: lmbData }) {
     <div className="page page-settings">
       <div className="settings-container">
         <header className="settings-header">
-          <p className="settings-eyebrow">ARC SHIELD</p>
+          <p className="settings-eyebrow">LockMyBrowser</p>
           <h1 className="settings-heading">Settings</h1>
           <p className="step-subtitle">
             Press <kbd className="kbd">Ctrl+Shift+K</kbd> anywhere to lock all
