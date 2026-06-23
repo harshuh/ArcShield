@@ -19,6 +19,8 @@ const STORAGE_KEYS = {
   settings: "lmb:settings",
 };
 
+let isUnlocking = false;
+
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
     chrome.tabs.create({ url: chrome.runtime.getURL("start.html") });
@@ -98,12 +100,12 @@ async function lockBrowser() {
     }));
 
   // Navigate all tabs to blank to hide content
-  const allTabs = savedWindows.flatMap((w) => w.tabs);
-  await Promise.all(
-    allTabs.map((t) =>
-      chrome.tabs.update(t.id, { url: "about:blank" }).catch(() => {}),
-    ),
-  );
+  // const allTabs = savedWindows.flatMap((w) => w.tabs);
+  // await Promise.all(
+  //   allTabs.map((t) =>
+  //     chrome.tabs.update(t.id, { url: "about:blank" }).catch(() => {}),
+  //   ),
+  // );
 
   // Set locked state before opening lock window
   await chrome.storage.local.set({
@@ -192,41 +194,90 @@ chrome.tabs.onActivated.addListener(async (activeInfo) => {
 });
 
 async function unlockBrowser() {
+  if (isUnlocking) return;
+
   const result = await chrome.storage.local.get([
+    STORAGE_KEYS.locked,
     STORAGE_KEYS.lockWindowId,
     STORAGE_KEYS.savedWindows,
   ]);
 
-  const lockWindowId = result[STORAGE_KEYS.lockWindowId] as number | undefined;
-  const savedWindows = (result[STORAGE_KEYS.savedWindows] ??
-    []) as SavedWindow[];
+  if (!result[STORAGE_KEYS.locked]) return;
 
-  // Clear locked state first so content scripts stop redirecting
-  await chrome.storage.local.set({ [STORAGE_KEYS.locked]: false });
-  await chrome.storage.local.remove([
-    STORAGE_KEYS.lockWindowId,
-    STORAGE_KEYS.savedWindows,
-  ]);
+  isUnlocking = true;
 
-  // Restore all saved tabs
-  for (const win of savedWindows) {
-    for (const tab of win.tabs) {
-      await chrome.tabs.update(tab.id, { url: tab.url }).catch(async () => {
-        await chrome.tabs
-          .create({ windowId: win.id, url: tab.url })
-          .catch(() => {});
-      });
+  try {
+    const lockWindowId = result[STORAGE_KEYS.lockWindowId] as number | undefined;
+    const savedWindows = (result[STORAGE_KEYS.savedWindows] ??
+      []) as SavedWindow[];
+
+    // Clear locked state first so content scripts stop redirecting
+    await chrome.storage.local.set({ [STORAGE_KEYS.locked]: false });
+    await chrome.storage.local.remove([
+      STORAGE_KEYS.lockWindowId,
+      STORAGE_KEYS.savedWindows,
+    ]);
+
+    // Restore all saved tabs
+    let restoredAny = false;
+
+    for (const win of savedWindows) {
+      const windowExists = await chrome.windows
+        .get(win.id)
+        .then(() => true)
+        .catch(() => false);
+
+      if (windowExists) {
+        restoredAny = true;
+        for (const tab of win.tabs) {
+          await chrome.tabs.update(tab.id, { url: tab.url }).catch(async () => {
+            await chrome.tabs
+              .create({ windowId: win.id, url: tab.url })
+              .catch(() => {});
+          });
+        }
+        if (win.state && win.state !== "minimized") {
+          await chrome.windows
+            .update(win.id, { state: win.state as chrome.windows.WindowState })
+            .catch(() => {});
+        }
+      } else {
+        if (win.tabs.length > 0) {
+          restoredAny = true;
+          const firstTab = win.tabs[0];
+          const otherTabs = win.tabs.slice(1);
+
+          const createData: chrome.windows.CreateData = {
+            // url: firstTab.url,
+            focused: true,
+          };
+          if (win.state && win.state !== "minimized") {
+            createData.state = win.state as chrome.windows.WindowState;
+          }
+
+          const newWin = await chrome.windows.create(createData).catch(() => null);
+          if (newWin && newWin.id) {
+            for (const tab of otherTabs) {
+              await chrome.tabs
+                .create({ windowId: newWin.id, url: tab.url })
+                .catch(() => {});
+            }
+          }
+        }
+      }
     }
-    if (win.state && win.state !== "minimized") {
-      await chrome.windows
-        .update(win.id, { state: win.state as chrome.windows.WindowState })
-        .catch(() => {});
-    }
-  }
 
-  // Close the lock window
-  if (lockWindowId) {
-    await chrome.windows.remove(lockWindowId).catch(() => {});
+    // Ensure there is at least one normal window open
+    if (!restoredAny) {
+      await chrome.windows.create({ focused: true }).catch(() => {});
+    }
+
+    // Close the lock window
+    if (lockWindowId) {
+      await chrome.windows.remove(lockWindowId).catch(() => {});
+    }
+  } finally {
+    isUnlocking = false;
   }
 }
 

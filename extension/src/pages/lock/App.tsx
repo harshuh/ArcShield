@@ -44,6 +44,7 @@ function PinView({ onForgot }: { onForgot: () => void }) {
   }
 
   async function handleUnlock() {
+    if (submitting) return;
     if (!pin) {
       setError("Enter your PIN.");
       return;
@@ -71,7 +72,7 @@ function PinView({ onForgot }: { onForgot: () => void }) {
   }
 
   function handleKeyDown(e: React.KeyboardEvent) {
-    if (e.key === "Enter") handleUnlock();
+    if (e.key === "Enter" && !submitting) handleUnlock();
   }
 
   return (
