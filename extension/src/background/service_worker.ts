@@ -248,7 +248,7 @@ async function unlockBrowser() {
           const otherTabs = win.tabs.slice(1);
 
           const createData: chrome.windows.CreateData = {
-            // url: firstTab.url,
+            url: firstTab.url,
             focused: true,
           };
           if (win.state && win.state !== "minimized") {

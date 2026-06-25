@@ -7,10 +7,7 @@
   "permissions": [
     "tabs",
     "storage",
-    "windows",
-    "webNavigation",
-    "activeTab",
-    "scripting"
+    "idle"
   ],
   "host_permissions": ["<all_urls>"],
 

@@ -8,8 +8,8 @@ export default defineManifest({
     'Secure your browser with LockMyBrowser — locks all tabs and protects your browsing session.',
   version: pkg.version,
 
-  // permissions: ['tabs', 'storage', 'windows', 'webNavigation', 'activeTab', 'scripting'],
-  permissions: ['tabs', 'storage', 'windows', 'webNavigation', 'activeTab', 'scripting', 'idle'],
+  // permissions: ['tabs', 'storage', 'idle'],
+  permissions: ['tabs', 'storage', 'idle'],
   host_permissions: ['<all_urls>'],
 
   background: {
