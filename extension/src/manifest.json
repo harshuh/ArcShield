@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LockMyBrowser",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Secure your browser with LockMyBrowser — locks all tabs and protects your browsing session with JWT-backed authentication.",
 
   "permissions": ["tabs", "storage", "idle"],
