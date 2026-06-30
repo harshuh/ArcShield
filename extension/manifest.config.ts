@@ -57,6 +57,6 @@ export default defineManifest({
   },
 
   content_security_policy: {
-    extension_pages: "script-src 'self'; object-src 'none'; connect-src 'self' http://localhost:5173",
+    extension_pages: "script-src 'self'; object-src 'none'; connect-src 'self' https://api.lockmybrowser.vercel.app",
   },
 })
