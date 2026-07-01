@@ -1,3 +1,5 @@
+import { verifyPin, verifyPassword, hashString } from "../shared/lmbStorage";
+
 interface SavedTab {
   id: number;
   url: string;
@@ -17,9 +19,12 @@ const STORAGE_KEYS = {
   savedWindows: "lmb:savedWindows",
   pin: "lmb:pin",
   settings: "lmb:settings",
+  email: "lmb:email",
+  recoveryPassword: "lmb:recoveryPassword",
 };
 
 let isUnlocking = false;
+let isBackgroundUnlocked = false;
 
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === "install") {
@@ -77,6 +82,7 @@ chrome.idle.onStateChanged.addListener(async (state) => {
 });
 
 async function lockBrowser() {
+  isBackgroundUnlocked = false;
   const allWindows = await chrome.windows.getAll({ populate: true });
 
   const savedWindows: SavedWindow[] = allWindows
@@ -212,6 +218,7 @@ async function unlockBrowser() {
       []) as SavedWindow[];
 
     // Clear locked state first so content scripts stop redirecting
+    isBackgroundUnlocked = true;
     await chrome.storage.local.set({ [STORAGE_KEYS.locked]: false });
     await chrome.storage.local.remove([
       STORAGE_KEYS.lockWindowId,
@@ -310,6 +317,73 @@ chrome.tabs.onCreated.addListener(async (tab) => {
     .catch(() => {});
 });
 
+async function verifyAndUnlock(enteredPin?: string): Promise<{ ok: boolean; error?: string }> {
+  if (!enteredPin) {
+    return { ok: false, error: "PIN required." };
+  }
+  const result = await chrome.storage.local.get(STORAGE_KEYS.pin);
+  const storedPinHash = result[STORAGE_KEYS.pin] as string | undefined;
+
+  const isMatch = await verifyPin(enteredPin, storedPinHash ?? null);
+  if (!isMatch) {
+    return { ok: false, error: "Incorrect PIN." };
+  }
+
+  await unlockBrowser();
+  return { ok: true };
+}
+
+async function verifyResetAndUnlock(
+  enteredEmail?: string,
+  enteredPassword?: string,
+  newPin?: string
+): Promise<{ ok: boolean; error?: string }> {
+  if (!enteredEmail || !enteredPassword || !newPin) {
+    return { ok: false, error: "All fields are required." };
+  }
+
+  const result = await chrome.storage.local.get([
+    STORAGE_KEYS.email,
+    STORAGE_KEYS.recoveryPassword,
+  ]);
+
+  const storedEmail = result[STORAGE_KEYS.email] as string | undefined;
+  const storedPasswordHash = result[STORAGE_KEYS.recoveryPassword] as string | undefined;
+
+  if (!storedEmail || enteredEmail.trim().toLowerCase() !== storedEmail.trim().toLowerCase()) {
+    return { ok: false, error: "Incorrect email address." };
+  }
+
+  const isMatch = await verifyPassword(enteredPassword, storedPasswordHash ?? null);
+  if (!isMatch) {
+    return { ok: false, error: "Incorrect recovery password." };
+  }
+
+  // Update PIN to new PIN (hashed)
+  const hashedPin = await hashString(newPin);
+  await chrome.storage.local.set({ [STORAGE_KEYS.pin]: hashedPin });
+
+  // Unlock
+  await unlockBrowser();
+  return { ok: true };
+}
+
+chrome.storage.onChanged.addListener(async (changes, areaName) => {
+  if (areaName !== "local") return;
+
+  if (changes[STORAGE_KEYS.locked]) {
+    const newValue = changes[STORAGE_KEYS.locked].newValue;
+    if (newValue === false && !isBackgroundUnlocked) {
+      // Storage bypass attempt! Re-lock immediately.
+      await chrome.storage.local.set({ [STORAGE_KEYS.locked]: true });
+      await enforceLockWindow();
+    } else if (newValue === true) {
+      isBackgroundUnlocked = false;
+      await enforceLockWindow();
+    }
+  }
+});
+
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message?.type === "LOCK_ALL_TABS") {
     lockBrowser()
@@ -319,8 +393,15 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   }
 
   if (message?.type === "UNLOCK") {
-    unlockBrowser()
-      .then(() => sendResponse({ ok: true }))
+    verifyAndUnlock(message.pin)
+      .then((res) => sendResponse(res))
+      .catch((err) => sendResponse({ ok: false, error: String(err) }));
+    return true;
+  }
+
+  if (message?.type === "RESET_PIN_AND_UNLOCK") {
+    verifyResetAndUnlock(message.email, message.password, message.newPin)
+      .then((res) => sendResponse(res))
       .catch((err) => sendResponse({ ok: false, error: String(err) }));
     return true;
   }

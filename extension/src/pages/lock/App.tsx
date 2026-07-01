@@ -54,14 +54,10 @@ function PinView({ onForgot }: { onForgot: () => void }) {
     setError(null);
 
     try {
-      const result = await chrome.storage.local.get("lmb:pin");
-      const savedPin = result["lmb:pin"] as string | undefined;
-
-      if (!savedPin || pin !== savedPin) {
-        setError("Incorrect PIN. Try again.");
+      const response = await chrome.runtime.sendMessage({ type: "UNLOCK", pin: pin });
+      if (!response.ok) {
+        setError(response.error || "Incorrect PIN. Try again.");
         setPin("");
-      } else {
-        await chrome.runtime.sendMessage({ type: "UNLOCK" });
       }
     } catch (err) {
       setError("Could not verify PIN. Please try again.");
@@ -110,38 +106,54 @@ function PinView({ onForgot }: { onForgot: () => void }) {
 
 function ForgotView({ onBack }: { onBack: () => void }) {
   const [email, setEmail] = useState("");
-  const [sent, setSent] = useState(false);
+  const [password, setPassword] = useState("");
+  const [newPin, setNewPin] = useState("");
+  const [confirmPin, setConfirmPin] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [sending, setSending] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
-  async function handleSendLink() {
+  function digitsOnly(raw: string) {
+    return raw.replace(/\D/g, "").slice(0, 12);
+  }
+
+  async function handleResetPin() {
     setError(null);
 
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
       setError("Enter a valid email address.");
       return;
     }
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    if (newPin.length < 4) {
+      setError("PIN must be at least 4 digits.");
+      return;
+    }
+    if (newPin !== confirmPin) {
+      setError("PINs do not match.");
+      return;
+    }
 
-    setSending(true);
+    setSubmitting(true);
 
     try {
-      const result = await chrome.storage.local.get("lmb:email");
-      const savedEmail = result["lmb:email"] as string | undefined;
+      const response = await chrome.runtime.sendMessage({
+        type: "RESET_PIN_AND_UNLOCK",
+        email: email.trim(),
+        password: password,
+        newPin: newPin,
+      });
 
-      if (
-        !savedEmail ||
-        email.trim().toLowerCase() !== savedEmail.toLowerCase()
-      ) {
-        setError("This email doesn\u2019t match the one you registered with.");
-        setSending(false);
-        return;
+      if (!response.ok) {
+        setError(response.error || "Reset failed. Please verify your credentials.");
       }
-      setSent(true);
     } catch (err) {
       setError("Something went wrong. Please try again.");
       console.error(err);
     } finally {
-      setSending(false);
+      setSubmitting(false);
     }
   }
 
@@ -153,34 +165,59 @@ function ForgotView({ onBack }: { onBack: () => void }) {
         </button>
       </div>
 
-      <p className="lock-panel-label">Email</p>
+      <p className="lock-panel-label">Recovery Email</p>
       <input
         type="email"
-        autoFocus
         value={email}
         onChange={(e) => setEmail(e.target.value)}
-        className="lock-panel-input lock-panel-input-email"
+        className="lock-panel-input"
         placeholder="you@example.com"
+        autoComplete="off"
+      />
+
+      <p className="lock-panel-label">Recovery Password</p>
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        className="lock-panel-input"
+        placeholder="••••••••"
+        autoComplete="off"
+      />
+
+      <p className="lock-panel-label">New PIN</p>
+      <input
+        type="password"
+        inputMode="numeric"
+        value={newPin}
+        onChange={(e) => setNewPin(digitsOnly(e.target.value))}
+        className="lock-panel-input"
+        placeholder="••••"
+        autoComplete="off"
+      />
+
+      <p className="lock-panel-label">Confirm New PIN</p>
+      <input
+        type="password"
+        inputMode="numeric"
+        value={confirmPin}
+        onChange={(e) => setConfirmPin(digitsOnly(e.target.value))}
+        className="lock-panel-input"
+        placeholder="••••"
+        autoComplete="off"
       />
 
       {error && <p className="lock-error">{error}</p>}
-      {sent && (
-        <p className="lock-success">
-          Link sent! Check your inbox to reset your PIN.
-        </p>
-      )}
 
-      {!sent && (
-        <div className="lock-panel-action">
-          <button
-            className="lock-send-btn"
-            onClick={handleSendLink}
-            disabled={sending || !email.trim()}
-          >
-            {sending ? "Sending…" : "Send Link"}
-          </button>
-        </div>
-      )}
+      <div className="lock-panel-action">
+        <button
+          className="lock-unlock-btn"
+          onClick={handleResetPin}
+          disabled={submitting || !email.trim() || !password || !newPin || !confirmPin}
+        >
+          {submitting ? "Resetting…" : "RESET PIN & UNLOCK"}
+        </button>
+      </div>
     </div>
   );
 }

@@ -3,6 +3,8 @@ import { useRequireOnboarding } from "../../shared/useRequireOnboarding";
 import {
   setlmbSettings,
   setlmbPin,
+  verifyPin,
+  hashString,
   type lmbData,
 } from "../../shared/lmbStorage";
 import { AutoLockSection } from "./AutoLockSection";
@@ -33,11 +35,13 @@ function SettingsContent({ initialData }: { initialData: lmbData }) {
   }
 
   async function handleResetPin(currentPin: string, newPin: string) {
-    if (currentPin !== data.pin) {
+    const isMatch = await verifyPin(currentPin, data.pin);
+    if (!isMatch) {
       return { ok: false, error: "Current PIN is incorrect." };
     }
     await setlmbPin(newPin);
-    setData((prev) => ({ ...prev, pin: newPin }));
+    const hashedNewPin = await hashString(newPin);
+    setData((prev) => ({ ...prev, pin: hashedNewPin }));
     return { ok: true };
   }
 

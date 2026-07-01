@@ -57,8 +57,39 @@ export async function setlmbSettings(
   return next;
 }
 
+export async function hashString(str: string): Promise<string> {
+  const msgUint8 = new TextEncoder().encode(str);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+  return hashHex;
+}
+
+export async function verifyPin(enteredPin: string, storedPinHash: string | null): Promise<boolean> {
+  if (!storedPinHash) return false;
+  const enteredHash = await hashString(enteredPin);
+  if (enteredHash === storedPinHash) return true;
+  if (enteredPin === storedPinHash) {
+
+    await setlmbPin(enteredPin);
+    return true;
+  }
+  return false;
+}
+
+export async function verifyPassword(enteredPassword: string, storedPasswordHash: string | null): Promise<boolean> {
+  if (!storedPasswordHash) return false;
+  const enteredHash = await hashString(enteredPassword);
+  if (enteredHash === storedPasswordHash) return true;
+  if (enteredPassword === storedPasswordHash) {
+    return true;
+  }
+  return false;
+}
+
 export async function setlmbPin(pin: string): Promise<void> {
-  await chrome.storage.local.set({ [KEYS.pin]: pin });
+  const hashedPin = await hashString(pin);
+  await chrome.storage.local.set({ [KEYS.pin]: hashedPin });
 }
 
 export async function completeOnboarding(data: {
@@ -66,10 +97,12 @@ export async function completeOnboarding(data: {
   password: string;
   pin: string;
 }): Promise<void> {
+  const hashedPin = await hashString(data.pin);
+  const hashedPassword = await hashString(data.password);
   await chrome.storage.local.set({
     [KEYS.onboarded]: true,
     [KEYS.email]: data.email,
-    [KEYS.recoveryPassword]: data.password,
-    [KEYS.pin]: data.pin,
+    [KEYS.recoveryPassword]: hashedPassword,
+    [KEYS.pin]: hashedPin,
   });
 }
